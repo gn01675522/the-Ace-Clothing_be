@@ -1,9 +1,16 @@
 import mongoose, { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { PRODUCT_CATEGORY_CLASSES } from './product_category.aux.types';
 
 @Schema({ timestamps: true, collection: 'product_category' })
 export class ProductCategory extends Document {
-  @Prop({ required: true, unique: true, trim: true, index: true })
+  @Prop({
+    required: true,
+    unique: true,
+    trim: true,
+    index: true,
+    enum: PRODUCT_CATEGORY_CLASSES,
+  })
   name: string;
 
   @Prop({
