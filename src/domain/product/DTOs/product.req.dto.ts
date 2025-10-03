@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Types } from 'mongoose';
+import mongoose from 'mongoose';
 
 export class ProductCreateDTO {
   @ApiProperty({ example: 'Cool Jacket', description: '產品名稱' })
   name: string;
 
   @ApiProperty({ example: '65af2bc1234abcd5678ef901', description: '性別 id' })
-  gender: Types.ObjectId;
+  gender: mongoose.Types.ObjectId;
 
   @ApiProperty({ example: '65af2bc1234abcd5678ef902', description: '分類 id' })
-  category: Types.ObjectId;
+  category: mongoose.Types.ObjectId;
 
   @ApiProperty({ example: ['waterproof', 'lightweight'], required: false })
   features?: string[];
@@ -29,10 +29,10 @@ export class ProductUpdateDTO {
   name?: string;
 
   @ApiProperty({ example: '65af2bc1234abcd5678ef901', description: '性別 id' })
-  gender?: Types.ObjectId;
+  gender?: mongoose.Types.ObjectId;
 
   @ApiProperty({ example: '65af2bc1234abcd5678ef902', description: '分類 id' })
-  category?: Types.ObjectId;
+  category?: mongoose.Types.ObjectId;
 
   @ApiProperty({ example: ['waterproof', 'lightweight'], required: false })
   features?: string[];

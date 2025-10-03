@@ -1,15 +1,8 @@
 import { Controller, Body, Get, Post, Put, Delete } from '@nestjs/common';
 import { Query } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiResponse,
-  ApiOperation,
-  ApiQuery,
-  ApiPropertyOptional,
-} from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 
 import { ProductService } from '../services/product.service';
-import { Product } from '../../../db/model/core/product/product.core';
 import {
   ProductsGetResDTO,
   ProductFindByIdResDTO,

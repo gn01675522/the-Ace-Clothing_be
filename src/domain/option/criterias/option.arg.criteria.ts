@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 export interface OptionCreateCustomerLevelArgCriteria {
   name: string;
   order: number;
@@ -9,7 +11,7 @@ export interface OptionCreateGenderArgCriteria {
 
 export interface OptionCreateProductCategoryArgCriteria {
   name: string;
-  parent: string | null;
+  parent: mongoose.Types.ObjectId | null;
 }
 
 export interface OptionCreateProductOriginArgCriteria {
@@ -21,7 +23,7 @@ export interface OptionCreateSizeGroupArgCriteria {
 }
 
 export interface OptionCreateSizeValueArgCriteria {
-  group_id: string;
+  group_id: mongoose.Types.ObjectId;
   value: string;
   order: number;
 }

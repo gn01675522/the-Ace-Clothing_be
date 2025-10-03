@@ -26,20 +26,20 @@ export class ProductRepo {
     const results = await this.productModel.aggregate([
       {
         $match: {
-          ...rest,
-          ...(name ? { name: { $regex: name, $options: 'i' } } : {}),
+          // ...rest,
+          // ...(name ? { name: { $regex: name, $options: 'i' } } : {}),
           recycled: recycled ?? { $ne: true },
         },
       },
-      {
-        $lookup: {
-          from: 'product_category',
-          localField: 'category',
-          foreignField: '_id',
-          as: 'categoryInfo',
-        },
-      },
-      { $unwind: '$categoryInfo' },
+      // {
+      //   $lookup: {
+      //     from: 'product_category',
+      //     localField: 'category',
+      //     foreignField: '_id',
+      //     as: 'categoryInfo',
+      //   },
+      // },
+      // { $unwind: '$categoryInfo' },
       {
         $lookup: {
           from: 'gender',
@@ -51,20 +51,20 @@ export class ProductRepo {
       { $unwind: '$genderInfo' },
       { $skip: skip },
       { $limit: limit },
-      {
-        $project: {
-          name: 1,
-          gender: '$genderInfo',
-          category: '$categoryInfo',
-          features: 1,
-          description: 1,
-          img_urls: 1,
-          createdAt: 1,
-          updatedAt: 1,
-        },
-      },
+      // {
+      //   $project: {
+      //     name: 1,
+      //     gender: '$genderInfo',
+      //     category: '$categoryInfo',
+      //     features: 1,
+      //     description: 1,
+      //     img_urls: 1,
+      //     createdAt: 1,
+      //     updatedAt: 1,
+      //   },
+      // },
     ]);
-
+    console.log(results);
     return results;
   }
 

@@ -62,7 +62,10 @@ export class SeedService {
       if (!targetGroup)
         throw new Error('Cannot find size group, please try again!');
 
-      return { ...size, group_id: targetGroup.id };
+      return {
+        ...size,
+        group_id: targetGroup._id,
+      };
     });
 
     const sizeValueResults =
@@ -83,10 +86,11 @@ export class SeedService {
       const parent = mainCategoryResults.find(
         (category) => category.name === item.parent,
       );
+
       if (!parent)
         throw new Error('main category inserted failed, please try again!');
 
-      return { ...item, parent: parent.id };
+      return { ...item, parent: parent._id };
     });
 
     const subCategoryResults =
@@ -115,8 +119,8 @@ export class SeedService {
 
       return {
         ...product,
-        gender: genderId.id,
-        category: categoryId.id,
+        gender: genderId._id,
+        category: categoryId._id,
       };
     });
 
@@ -146,8 +150,8 @@ export class SeedService {
 
       return {
         ...sku,
-        product_id: targetProduct.id,
-        size: targetSize.id,
+        product_id: targetProduct._id,
+        size: targetSize._id,
       };
     });
 

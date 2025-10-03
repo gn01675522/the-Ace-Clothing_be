@@ -4,12 +4,12 @@ import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { OptionService } from '../services/option.service';
 
 import {
-  OptionCreateCustomerLevelDTO,
-  OptionCreateGenderDTO,
-  OptionCreateProductCategoryDTO,
-  OptionCreateProductOriginDTO,
-  OptionCreateSizeGroupDTO,
-  OptionCreateSizeValueDTO,
+  OptionCreateCustomerLevelReqDTO,
+  OptionCreateGenderReqDTO,
+  OptionCreateProductCategoryReqDTO,
+  OptionCreateProductOriginReqDTO,
+  OptionCreateSizeGroupReqDTO,
+  OptionCreateSizeValueReqDTO,
 } from '../DTOs/option.req.dto';
 
 @ApiTags('option')
@@ -26,8 +26,8 @@ export class OptionController {
     status: 200,
     description: '成功創建 customer level',
   })
-  async createCustomerLevel(@Body() dto: OptionCreateCustomerLevelDTO[]) {
-    const results = this.optionService.createCustomLevel(dto);
+  async createCustomerLevel(@Body() body: OptionCreateCustomerLevelReqDTO[]) {
+    const results = this.optionService.createCustomLevel(body);
 
     return results;
   }
@@ -41,7 +41,7 @@ export class OptionController {
     status: 200,
     description: '成功創建 gender',
   })
-  async createGender(@Body() dto: OptionCreateGenderDTO[]) {
+  async createGender(@Body() dto: OptionCreateGenderReqDTO[]) {
     const results = this.optionService.createGender(dto);
 
     return results;
@@ -56,7 +56,9 @@ export class OptionController {
     status: 200,
     description: '成功創建 product category',
   })
-  async createProductCategory(@Body() dto: OptionCreateProductCategoryDTO[]) {
+  async createProductCategory(
+    @Body() dto: OptionCreateProductCategoryReqDTO[],
+  ) {
     const results = this.optionService.createProductCategory(dto);
 
     return results;
@@ -71,7 +73,7 @@ export class OptionController {
     status: 200,
     description: '成功創建 product origin',
   })
-  async createProductOrigin(@Body() dto: OptionCreateProductOriginDTO[]) {
+  async createProductOrigin(@Body() dto: OptionCreateProductOriginReqDTO[]) {
     const results = this.optionService.createProductOrigin(dto);
 
     return results;
@@ -86,7 +88,7 @@ export class OptionController {
     status: 200,
     description: '成功創建 size group',
   })
-  async createSizeGroup(@Body() dto: OptionCreateSizeGroupDTO[]) {
+  async createSizeGroup(@Body() dto: OptionCreateSizeGroupReqDTO[]) {
     const results = this.optionService.createSizeGroup(dto);
 
     return results;
@@ -101,7 +103,7 @@ export class OptionController {
     status: 200,
     description: '成功創建 size value',
   })
-  async createSizeValue(@Body() dto: OptionCreateSizeValueDTO[]) {
+  async createSizeValue(@Body() dto: OptionCreateSizeValueReqDTO[]) {
     const results = this.optionService.createSizeValue(dto);
 
     return results;
