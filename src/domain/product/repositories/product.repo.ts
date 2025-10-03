@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { ClientSession, Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -71,5 +71,11 @@ export class ProductRepo {
   async count(criteria: any): Promise<number> {
     const { skip, limit, ...rest } = criteria;
     return this.productModel.countDocuments(rest).exec();
+  }
+
+  async create(criteria: any[], session?: ClientSession) {
+    const results = await this.productModel.create(criteria, { session });
+
+    return results;
   }
 }

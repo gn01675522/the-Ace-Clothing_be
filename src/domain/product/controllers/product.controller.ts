@@ -35,4 +35,8 @@ export class ProductController {
     const results = this.productService.findProducts(query);
     return results;
   }
+
+  async create(dto: any[]) {
+    const results = await this.productService.create(dto);
+  }
 }

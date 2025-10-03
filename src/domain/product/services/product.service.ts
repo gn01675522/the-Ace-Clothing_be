@@ -41,4 +41,10 @@ export class ProductService {
 
     return results;
   }
+
+  async create(dto: any[]): Promise<any> {
+    const results = await this.productRepo.create(dto);
+
+    return results;
+  }
 }
