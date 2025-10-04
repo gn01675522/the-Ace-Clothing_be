@@ -1,9 +1,9 @@
-import { Types } from 'mongoose';
+import mongoose from 'mongoose';
 
 export interface ProductFindQueryArgCriteria {
   name?: string;
-  category?: Types.ObjectId;
-  gender?: Types.ObjectId;
+  category?: mongoose.Types.ObjectId;
+  gender?: mongoose.Types.ObjectId;
   skip: number;
   limit: number;
   recycled: boolean;
@@ -11,22 +11,21 @@ export interface ProductFindQueryArgCriteria {
 
 export interface ProductCreateArgCriteria {
   name: string;
-  gender: Types.ObjectId;
-  category: Types.ObjectId;
+  gender: mongoose.Types.ObjectId;
+  category: mongoose.Types.ObjectId;
   description: string;
   features: string[];
   img_urls: string[];
 }
 
 export interface ProductUpdateArgCriteria {
-  id: string;
+  _id: mongoose.Types.ObjectId;
   data: {
     name?: string;
-    category?: string;
-    gender?: string;
+    category?: mongoose.Types.ObjectId;
+    gender?: mongoose.Types.ObjectId;
     features?: string[];
     description?: string;
     img_urls?: string[];
-    recycled?: boolean;
   };
 }

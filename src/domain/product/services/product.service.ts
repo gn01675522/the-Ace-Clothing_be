@@ -1,13 +1,18 @@
+import mongoose from 'mongoose';
 import { Injectable } from '@nestjs/common';
 
 import { ProductRepo } from '../repositories/product.repo';
 
-import { ProductCreateReqDTO } from '../DTOs/product.req.dto';
+import {
+  ProductCreateReqDTO,
+  ProductUpdateReqDTO,
+} from '../DTOs/product.req.dto';
 import { ProductsGetResDTO } from '../DTOs/product.res.dto';
 import {
   mapToProductResDTO,
   mapToProductFindArgCriteria,
   mapToProductCreateCriteria,
+  mapToProductUpdateCriteria,
 } from './product.service.mapper';
 import { parsePaginationNumberUtils } from 'src/shared/utils.shared';
 
@@ -43,11 +48,19 @@ export class ProductService {
     return results;
   }
 
+  async updateProduct(id: string, dto: ProductUpdateReqDTO) {
+    const criteria = mapToProductUpdateCriteria(id, dto);
+
+    const result = await this.productRepo.findOneAndUpdate(criteria);
+
+    return result;
+  }
+
   async create(dto: ProductCreateReqDTO): Promise<any> {
     const criteria = mapToProductCreateCriteria(dto);
 
-    const results = await this.productRepo.create(criteria);
+    const result = await this.productRepo.create(criteria);
 
-    return results;
+    return result;
   }
 }

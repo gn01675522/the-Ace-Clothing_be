@@ -73,6 +73,20 @@ export class ProductRepo {
 
     return results;
   }
+  async findOneAndUpdate(
+    criteria: ProductUpdateArgCriteria,
+    session?: ClientSession,
+  ) {
+    const result = await this.productModel
+      .findOneAndUpdate(
+        { _id: criteria._id, recycled: { $ne: true } },
+        { ...criteria.data },
+        { new: true, runValidators: true, session },
+      )
+      .lean();
+
+    return result;
+  }
   async create(
     criteria: ProductCreateArgCriteria,
     session?: ClientSession,

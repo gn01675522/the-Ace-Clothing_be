@@ -1,6 +1,15 @@
-import { Controller, Body, Get, Post, Put, Delete } from '@nestjs/common';
-import { Query } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  Controller,
+  Query,
+  Body,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+} from '@nestjs/common';
+
+import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 import { ProductService } from '../services/product.service';
 import { ProductGetQueryDTO } from '../DTOs/product.query.dto';
@@ -8,7 +17,10 @@ import {
   ProductsGetResDTO,
   ProductFindByIdResDTO,
 } from '../DTOs/product.res.dto';
-import { ProductCreateReqDTO } from '../DTOs/product.req.dto';
+import {
+  ProductCreateReqDTO,
+  ProductUpdateReqDTO,
+} from '../DTOs/product.req.dto';
 
 @ApiTags('product')
 @Controller('product')
@@ -28,6 +40,24 @@ export class ProductController {
   async get(@Query() query: ProductGetQueryDTO) {
     const results = this.productService.findProducts(query);
     return results;
+  }
+
+  @Put('/:id')
+  @ApiOperation({ summary: '更新產品' })
+  @ApiParam({
+    name: 'id',
+    description: '產品的 mongoDB ID',
+    type: String,
+    example: '66f7d2f3e6c1234abcd12345',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '更新成功',
+  })
+  async update(@Param('id') id: string, @Body() dto: ProductUpdateReqDTO) {
+    const result = await this.productService.updateProduct(id, dto);
+
+    return result;
   }
 
   @Post()
