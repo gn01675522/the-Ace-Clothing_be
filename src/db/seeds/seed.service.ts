@@ -1,8 +1,15 @@
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 
-import { ProductService } from '../../domain/product/services/product.service';
-import { OptionService } from '../../domain/option/services/option.service';
-import { SKUService } from 'src/domain/SKU/services/SKU.service';
+import { Product } from '../model/core/product/product.core';
+import { ProductCategory } from '../model/auxiliary/product_category/product_category.aux';
+import { ProductOrigin } from '../model/auxiliary/product_origin/product_origin.aux';
+import { CustomerLevel } from '../model/auxiliary/customer_level/customer_level.aux';
+import { Gender } from '../model/auxiliary/gender/gender.aux';
+import { SizeGroup } from '../model/auxiliary/size_group/size_group.aux';
+import { SizeValue } from '../model/auxiliary/size_value/size_value.aux';
+import { SKU } from '../model/core/SKU/SKU.core';
 
 import { productSeed } from './data/product.seed';
 import { customerLevelSeed } from './data/customer_level.seed';
@@ -18,161 +25,273 @@ import { SKUSeed } from './data/SKU.seed';
 @Injectable()
 export class SeedService {
   constructor(
-    private readonly productService: ProductService,
-    private readonly optionService: OptionService,
-    private readonly SKUService: SKUService,
+    @InjectModel(CustomerLevel.name)
+    private readonly customerLevelModel: Model<CustomerLevel>,
+    @InjectModel(ProductOrigin.name)
+    private readonly productOriginModel: Model<ProductOrigin>,
+    @InjectModel(Gender.name)
+    private readonly genderModel: Model<Gender>,
+    @InjectModel(SizeGroup.name)
+    private readonly sizeGroupModel: Model<SizeGroup>,
+    @InjectModel(SizeValue.name)
+    private readonly sizeValueModel: Model<SizeValue>,
+    @InjectModel(ProductCategory.name)
+    private readonly productCategoryModel: Model<ProductCategory>,
+    @InjectModel(Product.name)
+    private readonly productModel: Model<Product>,
+    @InjectModel(SKU.name)
+    private readonly SKUModel: Model<SKU>,
   ) {}
 
   async genCustomerLevel() {
     console.log('🌱 Running Customer Level Seed...');
 
-    const results =
-      await this.optionService.createCustomLevel(customerLevelSeed);
+    try {
+      await this.customerLevelModel.insertMany(customerLevelSeed, {
+        ordered: false,
+      });
 
-    console.log('✅ Customer Level Seeding finished');
-    return results;
+      console.log('✅ Customer Level Seeding finished');
+    } catch (e: any) {
+      if (e?.writeErrors) {
+        console.warn(
+          '⚠️ Customer level duplicate records skipped:',
+          e.writeErrors.length,
+        );
+      } else {
+        throw e;
+      }
+    }
   }
   async genProductOrigin() {
     console.log('🌱 Running Product Origin Seed...');
 
-    const results =
-      await this.optionService.createProductOrigin(productOriginSeed);
+    try {
+      await this.productOriginModel.insertMany(productOriginSeed, {
+        ordered: false,
+      });
 
-    console.log('✅ Product Origin Seeding finished');
-    return results;
+      console.log('✅ Product Origin Seeding finished');
+    } catch (e: any) {
+      if (e?.writeErrors) {
+        console.warn(
+          '⚠️ Product origin duplicate records skipped:',
+          e.writeErrors.length,
+        );
+      } else {
+        throw e;
+      }
+    }
   }
   async genGender() {
     console.log('🌱 Running Gender Seed...');
 
-    const results = await this.optionService.createGender(genderSeed);
+    try {
+      await this.genderModel.insertMany(genderSeed, {
+        ordered: false,
+      });
 
-    console.log('✅ Gender Seeding finished');
-    return results;
+      console.log('✅ Gender Seeding finished');
+    } catch (e: any) {
+      if (e?.writeErrors) {
+        console.warn(
+          '⚠️ Gender duplicate records skipped:',
+          e.writeErrors.length,
+        );
+      } else {
+        throw e;
+      }
+    }
   }
   async genSize() {
     console.log('🌱 Running Size Seed...');
-    const sizeGroupResults =
-      await this.optionService.createSizeGroup(sizeGroupSeed);
 
-    const newSizeValue = sizeValueSeed.map((size) => {
-      const targetGroup = sizeGroupResults.find(
-        (group) => group.name === size.group_id,
+    try {
+      const sizeGroupResults = await this.sizeGroupModel.insertMany(
+        sizeGroupSeed,
+        { ordered: false },
       );
 
-      if (!targetGroup)
-        throw new Error('Cannot find size group, please try again!');
+      const newSizeValue = sizeValueSeed.map((size) => {
+        const targetGroup = sizeGroupResults.find(
+          (group) => group.name === size.group_id,
+        );
 
-      return {
-        ...size,
-        group_id: targetGroup._id,
-      };
-    });
+        if (!targetGroup)
+          throw new Error('Cannot find size group, please try again!');
 
-    const sizeValueResults =
-      await this.optionService.createSizeValue(newSizeValue);
+        return {
+          ...size,
+          group_id: targetGroup._id,
+        };
+      });
 
-    console.log('✅ Size Seeding finished');
-    return { sizeGroup: sizeGroupResults, sizeValue: sizeValueResults };
+      await this.sizeValueModel.insertMany(newSizeValue, {
+        ordered: false,
+      });
+
+      console.log('✅ Size Seeding finished');
+    } catch (e: any) {
+      if (e?.writeErrors) {
+        console.warn(
+          '⚠️ Size duplicate records skipped:',
+          e.writeErrors.length,
+        );
+      } else {
+        throw e;
+      }
+    }
   }
   async genProductCategory() {
     console.log('🌱 Running Product Category Seed...');
 
-    const mainCategoryResults =
-      await this.optionService.createProductCategory(productCategorySeed);
-
-    console.log('🌱 Main Product Category Seeding finished...');
-
-    const newSubCategory = subProductCategorySeed.map((item) => {
-      const parent = mainCategoryResults.find(
-        (category) => category.name === item.parent,
+    try {
+      const mainCategoryResults = await this.productCategoryModel.insertMany(
+        productCategorySeed,
+        { ordered: false },
       );
 
-      if (!parent)
-        throw new Error('main category inserted failed, please try again!');
+      console.log('🌱 Main Product Category Seeding finished...');
 
-      return { ...item, parent: parent._id };
-    });
+      const newSubCategory = subProductCategorySeed.map((item) => {
+        const parent = mainCategoryResults.find(
+          (category) => category.name === item.parent,
+        );
 
-    const subCategoryResults =
-      await this.optionService.createProductCategory(newSubCategory);
+        if (!parent)
+          throw new Error('main category inserted failed, please try again!');
 
-    console.log('🌱 Sub Product Category Seeding finished...');
+        return { ...item, parent: parent._id };
+      });
 
-    console.log('✅ Product Category Seeding finished');
-    return [...mainCategoryResults, ...subCategoryResults];
+      await this.productCategoryModel.insertMany(newSubCategory, {
+        ordered: false,
+      });
+
+      console.log('🌱 Sub Product Category Seeding finished...');
+
+      console.log('✅ Product Category Seeding finished');
+    } catch (e: any) {
+      if (e?.writeErrors) {
+        console.warn(
+          '⚠️ Product category duplicate records skipped:',
+          e.writeErrors.length,
+        );
+      } else {
+        throw e;
+      }
+    }
   }
-  async genProduct(gender: any[], category: any[]) {
+  async genProduct() {
     console.log('🌱 Running Product Seed...');
 
-    const newProductData = productSeed.map((product) => {
-      const genderId = gender.find((gender) => gender.name === product.gender);
+    try {
+      const findGender = await this.genderModel.find();
+      const findCategory = await this.productCategoryModel.find();
 
-      const categoryId = category.find(
-        (category) => category.name === product.category,
-      );
+      const newProductData = productSeed.map((product) => {
+        const genderId = findGender.find(
+          (gender) => gender.name === product.gender,
+        );
 
-      if (!genderId || !categoryId) {
-        const missingTarget = !genderId ? 'gender id' : 'category id';
+        const categoryId = findCategory.find(
+          (category) => category.name === product.category,
+        );
 
-        throw new Error(`Cannot find ${missingTarget}, please try again!`);
+        if (!genderId || !categoryId) {
+          const missingTarget = !genderId ? 'gender id' : 'category id';
+
+          throw new Error(`Cannot find ${missingTarget}, please try again!`);
+        }
+
+        return {
+          ...product,
+          gender: genderId._id,
+          category: categoryId._id,
+        };
+      });
+
+      await this.productModel.insertMany(newProductData, {
+        ordered: false,
+      });
+
+      console.log('✅ Product Seeding finished');
+    } catch (e: any) {
+      if (e?.writeErrors) {
+        console.warn(
+          '⚠️ Product duplicate records skipped:',
+          e.writeErrors.length,
+        );
+      } else {
+        throw e;
       }
-
-      return {
-        ...product,
-        gender: genderId._id,
-        category: categoryId._id,
-      };
-    });
-
-    const results = await this.productService.create(newProductData);
-
-    console.log('✅ Product Seeding finished');
-    return results;
+    }
   }
-
-  async genSKU(product: any[], sizeValue: any[]) {
+  async genSKU() {
     console.log('🌱 Running SKU Seed...');
 
-    const newSKUData = SKUSeed.map((sku) => {
-      const targetProduct = product.find(
-        (product) => product.name === sku.product_id,
-      );
-      const targetSize = sizeValue.find((size) => size.value === sku.size);
+    try {
+      const findProduct = await this.productModel.find();
+      const findSizeValue = await this.sizeValueModel.find();
 
-      if (!targetProduct || !targetSize) {
-        const missingTarget = !targetProduct ? 'product' : 'size';
-        const missingTargetInfo = !targetProduct ? sku.product_id : sku.size;
-
-        throw new Error(
-          `Cannot find target ${missingTarget}: ${missingTargetInfo}, please try again!`,
+      const newSKUData = SKUSeed.map((sku) => {
+        const targetProduct = findProduct.find(
+          (product) => product.name === sku.product_id,
         );
+        const targetSize = findSizeValue.find(
+          (size) => size.value === sku.size,
+        );
+
+        if (!targetProduct || !targetSize) {
+          const missingTarget = !targetProduct ? 'product' : 'size';
+          const missingTargetInfo = !targetProduct ? sku.product_id : sku.size;
+
+          throw new Error(
+            `Cannot find target ${missingTarget}: ${missingTargetInfo}, please try again!`,
+          );
+        }
+
+        return {
+          ...sku,
+          product_id: targetProduct._id,
+          size: targetSize._id,
+        };
+      });
+
+      await this.SKUModel.insertMany(newSKUData, {
+        ordered: false,
+      });
+
+      console.log('✅ SKU Seeding finished');
+    } catch (e: any) {
+      if (e?.writeErrors) {
+        console.warn('⚠️ SKU duplicate records skipped:', e.writeErrors.length);
+      } else {
+        throw e;
       }
-
-      return {
-        ...sku,
-        product_id: targetProduct._id,
-        size: targetSize._id,
-      };
-    });
-
-    const results = await this.SKUService.create(newSKUData);
-
-    console.log('✅ SKU Seeding finished');
-    return results;
+    }
   }
 
   async seed() {
-    await Promise.all([this.genCustomerLevel(), this.genProductOrigin()]);
-    const genderResults = await this.genGender();
-    const productCategoryResults = await this.genProductCategory();
-    const { sizeValue } = await this.genSize();
+    console.log('🚀 Start seeding');
 
-    const productResults = await this.genProduct(
-      genderResults,
-      productCategoryResults,
-    );
-    await this.genSKU(productResults, sizeValue);
+    try {
+      await Promise.all([
+        this.genCustomerLevel(),
+        this.genProductOrigin(),
+        this.genGender(),
+        this.genProductCategory(),
+        this.genSize(),
+      ]);
 
-    console.log('✅ Seeding finished');
+      await this.genProduct();
+      await this.genSKU();
+
+      console.log('✅ Seeding finished');
+    } catch (e: any) {
+      console.error('❌ Seeding failed:', e);
+    } finally {
+      console.log('🔌 Finished seeding proccess');
+    }
   }
 }

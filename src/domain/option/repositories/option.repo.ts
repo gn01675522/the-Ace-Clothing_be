@@ -66,64 +66,134 @@ export class OptionRepo {
     private readonly sizeValueModel: Model<SizeValueDocument>,
   ) {}
 
-  async createCustomerLevel(
-    criteria: OptionCreateCustomerLevelArgCriteria[],
-    session?: ClientSession,
-  ): Promise<OptionCustomerLevelReturnCriteria[]> {
-    const results = (
-      await this.customerLevelModel.create(criteria, { session })
-    ).map((item) => item.toObject());
+  async findProductCategories() {
+    const results = await this.productCategoryModel
+      .find({ recycled: { $ne: true } })
+      .lean();
 
     return results;
+  }
+
+  async findGenders() {
+    const results = await this.genderModel
+      .find({ recycled: { $ne: true } })
+      .lean();
+
+    return results;
+  }
+
+  async createCustomerLevel(
+    criteria: OptionCreateCustomerLevelArgCriteria,
+    session?: ClientSession,
+  ) {
+    const existingData = await this.customerLevelModel.findOne({
+      name: criteria.name,
+    });
+
+    if (existingData) {
+      console.warn(`⚠️ Customer Level "${criteria.name}" already exists`);
+      return existingData;
+    }
+
+    const data = new this.customerLevelModel({ ...criteria });
+
+    const result = await data.save({ session });
+
+    return result.toObject();
   }
   async createGender(
-    criteria: OptionCreateGenderArgCriteria[],
+    criteria: OptionCreateGenderArgCriteria,
     session?: ClientSession,
-  ): Promise<OptionGenderReturnCriteria[]> {
-    const results = (await this.genderModel.create(criteria, { session })).map(
-      (item) => item.toObject(),
-    );
+  ): Promise<OptionGenderReturnCriteria> {
+    const existingData = await this.genderModel.findOne({
+      name: criteria.name,
+    });
 
-    return results;
+    if (existingData) {
+      console.warn(`⚠️ Gender "${criteria.name}" already exists`);
+      return existingData;
+    }
+
+    const data = new this.genderModel({ ...criteria });
+
+    const result = await data.save({ session });
+
+    return result.toObject();
   }
   async createProductCategory(
-    criteria: OptionCreateProductCategoryArgCriteria[],
+    criteria: OptionCreateProductCategoryArgCriteria,
     session?: ClientSession,
-  ): Promise<OptionProductCategoryReturnCriteria[]> {
-    const results = (
-      await this.productCategoryModel.create(criteria, { session })
-    ).map((item) => item.toObject());
+  ): Promise<OptionProductCategoryReturnCriteria> {
+    const existingData = await this.productCategoryModel.findOne({
+      name: criteria.name,
+    });
 
-    return results;
+    if (existingData) {
+      console.warn(`⚠️ Product category "${criteria.name}" already exists`);
+      return existingData;
+    }
+
+    const data = new this.productCategoryModel({ ...criteria });
+
+    const result = await data.save({ session });
+
+    return result.toObject();
   }
   async createProductOrigin(
-    criteria: OptionCreateProductOriginArgCriteria[],
+    criteria: OptionCreateProductOriginArgCriteria,
     session?: ClientSession,
-  ): Promise<OptionProductOriginReturnCriteria[]> {
-    const results = (
-      await this.productOriginModel.create(criteria, { session })
-    ).map((item) => item.toObject());
+  ): Promise<OptionProductOriginReturnCriteria> {
+    const existingData = await this.productOriginModel.findOne({
+      name: criteria.name,
+    });
 
-    return results;
+    if (existingData) {
+      console.warn(`⚠️ Product origin "${criteria.name}" already exists`);
+      return existingData;
+    }
+
+    const data = new this.productOriginModel({ ...criteria });
+
+    const result = await data.save({ session });
+
+    return result.toObject();
   }
   async createSizeGroup(
-    criteria: OptionCreateSizeGroupArgCriteria[],
+    criteria: OptionCreateSizeGroupArgCriteria,
     session?: ClientSession,
-  ): Promise<OptionSizeGroupReturnCriteria[]> {
-    const results = (
-      await this.sizeGroupModel.create(criteria, { session })
-    ).map((item) => item.toObject());
+  ): Promise<OptionSizeGroupReturnCriteria> {
+    const existingData = await this.sizeGroupModel.findOne({
+      name: criteria.name,
+    });
 
-    return results;
+    if (existingData) {
+      console.warn(`⚠️ Size group "${criteria.name}" already exists`);
+      return existingData;
+    }
+
+    const data = new this.sizeGroupModel({ ...criteria });
+
+    const result = await data.save({ session });
+
+    return result.toObject();
   }
   async createSizeValue(
-    criteria: OptionCreateSizeValueArgCriteria[],
+    criteria: OptionCreateSizeValueArgCriteria,
     session?: ClientSession,
-  ): Promise<OptionSizeValueReturnCriteria[]> {
-    const results = (
-      await this.sizeValueModel.create(criteria, { session })
-    ).map((item) => item.toObject());
+  ): Promise<OptionSizeValueReturnCriteria> {
+    const existingData = await this.sizeValueModel.findOne({
+      name: criteria.value,
+    });
 
-    return results;
+    if (existingData) {
+      console.warn(`⚠️ Size value "${criteria.value}" already exists`);
+      return existingData;
+    }
+
+    const data = new this.sizeValueModel({ ...criteria });
+
+    const result = await data.save({ session });
+
+    return result.toObject();
   }
 }
