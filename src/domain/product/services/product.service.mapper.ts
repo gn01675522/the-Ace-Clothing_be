@@ -1,11 +1,13 @@
-import { Types } from 'mongoose';
+import mongoose from 'mongoose';
 import { parsePaginationNumberUtils } from 'src/shared/utils.shared';
 
 import type { ProductDTO } from '../DTOs/product.res.dto';
 import type { ProductReturnCriteria } from '../criterias/product.return.criteria';
 
 import type { ProductGetQueryDTO } from '../DTOs/product.query.dto';
+import type { ProductCreateReqDTO } from '../DTOs/product.req.dto';
 import type { ProductFindQueryArgCriteria } from '../criterias/product.arg.criteria';
+import type { ProductCreateArgCriteria } from '../criterias/product.arg.criteria';
 
 export const mapToProductResDTO = (doc: ProductReturnCriteria): ProductDTO => ({
   name: doc.name,
@@ -30,10 +32,23 @@ export const mapToProductFindArgCriteria = (
 
   return {
     ...(dto.name ? { name: dto.name } : {}),
-    ...(dto.gender ? { gender: new Types.ObjectId(dto.gender) } : {}),
-    ...(dto.category ? { category: new Types.ObjectId(dto.category) } : {}),
+    ...(dto.gender ? { gender: new mongoose.Types.ObjectId(dto.gender) } : {}),
+    ...(dto.category
+      ? { category: new mongoose.Types.ObjectId(dto.category) }
+      : {}),
     skip: ((current_page ?? 1) - 1) * (per_page ?? 10),
     limit: per_page ?? 10,
     recycled,
   };
 };
+
+export const mapToProductCreateCriteria = (
+  dto: ProductCreateReqDTO,
+): ProductCreateArgCriteria => ({
+  name: dto.name,
+  gender: new mongoose.Types.ObjectId(dto.gender),
+  category: new mongoose.Types.ObjectId(dto.category),
+  description: dto.description ? dto.description : '',
+  features: dto.features ? dto.features : [],
+  img_urls: dto.img_urls ? dto.img_urls : [],
+});

@@ -11,8 +11,8 @@ export interface ProductFindQueryArgCriteria {
 
 export interface ProductCreateArgCriteria {
   name: string;
-  gender: string;
-  category: string;
+  gender: Types.ObjectId;
+  category: Types.ObjectId;
   description: string;
   features: string[];
   img_urls: string[];

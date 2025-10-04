@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 
 import { ProductRepo } from '../repositories/product.repo';
 
+import { ProductCreateReqDTO } from '../DTOs/product.req.dto';
 import { ProductsGetResDTO } from '../DTOs/product.res.dto';
 import {
   mapToProductResDTO,
   mapToProductFindArgCriteria,
+  mapToProductCreateCriteria,
 } from './product.service.mapper';
 import { parsePaginationNumberUtils } from 'src/shared/utils.shared';
 
@@ -41,8 +43,10 @@ export class ProductService {
     return results;
   }
 
-  async create(dto: any[]): Promise<any> {
-    const results = await this.productRepo.create(dto);
+  async create(dto: ProductCreateReqDTO): Promise<any> {
+    const criteria = mapToProductCreateCriteria(dto);
+
+    const results = await this.productRepo.create(criteria);
 
     return results;
   }

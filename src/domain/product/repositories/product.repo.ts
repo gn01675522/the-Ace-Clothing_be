@@ -2,20 +2,26 @@ import { ClientSession, Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { Product } from '../../../db/model/core/product/product.core';
+import {
+  Product,
+  ProductDocument,
+} from '../../../db/model/core/product/product.core';
 
 import type {
   ProductFindQueryArgCriteria,
   ProductCreateArgCriteria,
   ProductUpdateArgCriteria,
 } from '../criterias/product.arg.criteria';
-import type { ProductReturnCriteria } from '../criterias/product.return.criteria';
+import type {
+  ProductBaseReturnCriteria,
+  ProductReturnCriteria,
+} from '../criterias/product.return.criteria';
 
 @Injectable()
 export class ProductRepo {
   constructor(
     @InjectModel(Product.name)
-    private readonly productModel: Model<Product>,
+    private readonly productModel: Model<ProductDocument>,
   ) {}
 
   async find(
@@ -67,15 +73,30 @@ export class ProductRepo {
 
     return results;
   }
+  async create(
+    criteria: ProductCreateArgCriteria,
+    session?: ClientSession,
+  ): Promise<ProductBaseReturnCriteria> {
+    const existingData = await this.productModel
+      .findOne({
+        name: criteria.name,
+      })
+      .exec();
 
+    if (existingData) {
+      console.warn(`⚠️ Product "${criteria.name}" already exists`);
+      return existingData;
+    }
+
+    const data = new this.productModel({ ...criteria });
+
+    const result = await data.save({ session });
+
+    return result.toObject();
+  }
   async count(criteria: any): Promise<number> {
     const { skip, limit, ...rest } = criteria;
+
     return this.productModel.countDocuments(rest).exec();
-  }
-
-  async create(criteria: any[], session?: ClientSession) {
-    const results = await this.productModel.create(criteria, { session });
-
-    return results;
   }
 }

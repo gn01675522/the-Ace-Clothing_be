@@ -3,11 +3,12 @@ import { Query } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 
 import { ProductService } from '../services/product.service';
+import { ProductGetQueryDTO } from '../DTOs/product.query.dto';
 import {
   ProductsGetResDTO,
   ProductFindByIdResDTO,
 } from '../DTOs/product.res.dto';
-import { ProductGetQueryDTO } from '../DTOs/product.query.dto';
+import { ProductCreateReqDTO } from '../DTOs/product.req.dto';
 
 @ApiTags('product')
 @Controller('product')
@@ -29,7 +30,18 @@ export class ProductController {
     return results;
   }
 
-  async create(dto: any[]) {
+  @Post()
+  @ApiOperation({
+    summary: '創建產品',
+    description: '請輸入必要屬性',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '成功創建產品',
+  })
+  async create(@Body() dto: ProductCreateReqDTO) {
     const results = await this.productService.create(dto);
+
+    return results;
   }
 }

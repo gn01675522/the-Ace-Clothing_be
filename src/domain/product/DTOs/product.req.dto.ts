@@ -1,30 +1,45 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 
-export class ProductCreateDTO {
-  @ApiProperty({ example: 'Cool Jacket', description: '產品名稱' })
+export class ProductCreateReqDTO {
+  @ApiPropertyOptional({
+    required: true,
+    example: 'Cool Jacket',
+    description: '產品名稱',
+  })
   name: string;
 
-  @ApiProperty({ example: '65af2bc1234abcd5678ef901', description: '性別 id' })
+  @ApiPropertyOptional({
+    required: true,
+    example: '65af2bc1234abcd5678ef901',
+    description: '性別 id',
+  })
   gender: mongoose.Types.ObjectId;
 
-  @ApiProperty({ example: '65af2bc1234abcd5678ef902', description: '分類 id' })
+  @ApiPropertyOptional({
+    required: true,
+    example: '65af2bc1234abcd5678ef902',
+    description: '分類 id',
+  })
   category: mongoose.Types.ObjectId;
 
-  @ApiProperty({ example: ['waterproof', 'lightweight'], required: false })
+  @ApiPropertyOptional({
+    required: false,
+    example: ['waterproof', '金屬', '塑膠'],
+  })
   features?: string[];
 
-  @ApiProperty({ example: '一件很酷的外套', required: false })
+  @ApiPropertyOptional({ required: false, example: '一件很酷的外套' })
   description?: string;
 
-  @ApiProperty({
-    example: ['https://example.com/image1.jpg'],
+  @ApiPropertyOptional({
     required: false,
+    example: ['https://example.com/image1.jpg'],
   })
   img_urls?: string[];
 }
 
-export class ProductUpdateDTO {
+export class ProductUpdateReqDTO {
   @ApiProperty({ example: 'Cool Jacket', description: '產品名稱' })
   name?: string;
 
