@@ -39,6 +39,7 @@ export class ProductController {
   })
   async get(@Query() query: ProductGetQueryDTO) {
     const results = this.productService.findProducts(query);
+
     return results;
   }
 
@@ -70,8 +71,26 @@ export class ProductController {
     description: '成功創建產品',
   })
   async create(@Body() dto: ProductCreateReqDTO) {
-    const results = await this.productService.create(dto);
+    const result = await this.productService.create(dto);
 
-    return results;
+    return result;
+  }
+
+  @Delete('/hard-delete/:id')
+  @ApiOperation({ summary: '硬刪除產品 (完全刪除)' })
+  @ApiParam({
+    name: 'id',
+    description: '產品的 mongoDB ID',
+    type: String,
+    example: '66f7d2f3e6c1234abcd12345',
+  })
+  @ApiResponse({
+    status: 203,
+    description: '成功刪除產品',
+  })
+  async delete(@Param('id') id: string) {
+    const result = await this.productService.hardDelete(id);
+
+    return result;
   }
 }

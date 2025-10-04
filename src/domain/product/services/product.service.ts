@@ -1,13 +1,14 @@
-import mongoose from 'mongoose';
 import { Injectable } from '@nestjs/common';
 
 import { ProductRepo } from '../repositories/product.repo';
 
+import type { ProductGetQueryDTO } from '../DTOs/product.query.dto';
 import {
   ProductCreateReqDTO,
   ProductUpdateReqDTO,
 } from '../DTOs/product.req.dto';
-import { ProductsGetResDTO } from '../DTOs/product.res.dto';
+import { ProductDTO, ProductsGetResDTO } from '../DTOs/product.res.dto';
+
 import {
   mapToProductResDTO,
   mapToProductFindArgCriteria,
@@ -15,8 +16,6 @@ import {
   mapToProductUpdateCriteria,
 } from './product.service.mapper';
 import { parsePaginationNumberUtils } from 'src/shared/utils.shared';
-
-import type { ProductGetQueryDTO } from '../DTOs/product.query.dto';
 
 @Injectable()
 export class ProductService {
@@ -60,6 +59,12 @@ export class ProductService {
     const criteria = mapToProductCreateCriteria(dto);
 
     const result = await this.productRepo.create(criteria);
+
+    return result;
+  }
+
+  async hardDelete(id: string) {
+    const result = await this.productRepo.hardDelete(id);
 
     return result;
   }

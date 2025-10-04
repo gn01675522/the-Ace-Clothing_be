@@ -64,10 +64,10 @@ export class ProductsGetResDTO extends GenericResDTO {
   @ApiProperty()
   data: ProductDTO[];
 
-  @ApiProperty()
+  @ApiProperty({ description: '分頁細節' })
   pagination: PaginationDTO;
 
-  @ApiProperty()
+  @ApiProperty({ description: '資料總筆數' })
   total: number;
 }
 

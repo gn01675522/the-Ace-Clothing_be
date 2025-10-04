@@ -113,4 +113,11 @@ export class ProductRepo {
 
     return this.productModel.countDocuments(rest).exec();
   }
+  async hardDelete(id: string, session?: ClientSession): Promise<any> {
+    const result = await this.productModel
+      .findByIdAndDelete(id, { session })
+      .lean();
+
+    return result;
+  }
 }
