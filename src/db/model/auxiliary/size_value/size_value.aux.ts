@@ -5,23 +5,23 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 export class SizeValue {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: 'SizeGroup',
+    required: true,
   })
   group_id: mongoose.Types.ObjectId;
 
-  @Prop({ type: String, required: true, unique: true, trim: true, index: true })
+  @Prop({ type: String, unique: true, trim: true, index: true, required: true })
   value: string;
 
   @Prop({
     type: Number,
     unique: true,
-    required: true,
     describe: '排序用',
+    required: true,
   })
   order: number;
 
-  @Prop({ type: Boolean, default: false, required: true })
+  @Prop({ type: Boolean, default: false, required: false })
   recycled: boolean;
 
   createdAt: Date;

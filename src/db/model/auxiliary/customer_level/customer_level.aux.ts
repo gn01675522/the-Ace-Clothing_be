@@ -7,23 +7,23 @@ import { CUSTOMER_LEVEL_CLASSES } from './customer_level.aux.types';
 export class CustomerLevel {
   @Prop({
     type: String,
-    required: true,
     unique: true,
     trim: true,
     index: true,
     enum: Object.values(CUSTOMER_LEVEL_CLASSES),
+    required: true,
   })
   name: string;
 
   @Prop({
     type: Number,
     unique: true,
-    required: true,
     describe: '排序用',
+    required: true,
   })
   order: number;
 
-  @Prop({ type: Boolean, default: false, required: true })
+  @Prop({ type: Boolean, default: false, required: false })
   recycled: boolean;
 
   createdAt: Date;

@@ -7,13 +7,13 @@ import { PRODUCT_ORIGIN_CLASSES } from './product_origin.aux.types';
 export class ProductOrigin {
   @Prop({
     type: String,
-    required: true,
     enum: Object.values(PRODUCT_ORIGIN_CLASSES),
     unique: true,
+    required: true,
   })
   name: string;
 
-  @Prop({ type: Boolean, default: false, required: true })
+  @Prop({ type: Boolean, default: false, required: false })
   recycled: boolean;
 
   createdAt: Date;

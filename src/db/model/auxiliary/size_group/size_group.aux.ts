@@ -6,13 +6,13 @@ import { SIZE_GROUP_CLASSES } from './size_group.aux.types';
 export class SizeGroup {
   @Prop({
     type: String,
-    required: true,
     unique: true,
     enum: Object.values(SIZE_GROUP_CLASSES),
+    required: true,
   })
   name: string;
 
-  @Prop({ type: Boolean, default: false, required: true })
+  @Prop({ type: Boolean, default: false, required: false })
   recycled: boolean;
 
   createdAt: Date;

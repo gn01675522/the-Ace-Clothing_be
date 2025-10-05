@@ -56,7 +56,7 @@ export class ProductCategoryDTO {
   parent: string | null;
 
   @ApiProperty({ type: Boolean })
-  recycled: boolean;
+  recycled?: boolean;
 
   @ApiProperty({ type: Date })
   createdAt: Date;

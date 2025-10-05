@@ -6,23 +6,24 @@ import { PRODUCT_CATEGORY_CLASSES } from './product_category.aux.types';
 export class ProductCategory {
   @Prop({
     type: String,
-    required: true,
     unique: true,
     trim: true,
     index: true,
     enum: Object.values(PRODUCT_CATEGORY_CLASSES),
+    required: true,
   })
   name: string;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId || null,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'ProductCategory',
     default: null,
     describe: '若為 null 則為主類別，反之為 parent id 底下的子類別',
+    required: false,
   })
   parent: mongoose.Types.ObjectId | null;
 
-  @Prop({ type: Boolean, default: false, required: true })
+  @Prop({ type: Boolean, default: false, required: false })
   recycled: boolean;
 
   createdAt: Date;

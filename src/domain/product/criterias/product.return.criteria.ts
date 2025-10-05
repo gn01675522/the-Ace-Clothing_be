@@ -7,23 +7,17 @@ export interface ProductBaseReturnCriteria {
   name: string;
   gender: mongoose.Types.ObjectId;
   category: mongoose.Types.ObjectId;
-  recycled: boolean;
+  recycled?: boolean;
   features?: string[];
   description?: string;
   img_urls?: string[];
   __v: number;
 }
 
-export interface ProductReturnCriteria {
-  createdAt: Date;
-  updatedAt: Date;
-  name: string;
+export type ProductReturnCriteria = Omit<
+  ProductBaseReturnCriteria,
+  'category' | 'gender'
+> & {
   gender: { _id: mongoose.Types.ObjectId; name: string };
   category: { _id: mongoose.Types.ObjectId; name: string };
-  recycled: boolean;
-  features?: string[];
-  description?: string;
-  img_urls?: string[];
-  _id: mongoose.Types.ObjectId;
-  __v: number;
-}
+};

@@ -31,8 +31,8 @@ export class ProductModelDTO {
   @ApiProperty({ description: '產品圖片', required: false })
   img_urls?: string[];
 
-  @ApiProperty({ description: '產品是否軟刪除' })
-  recycled: boolean;
+  @ApiProperty({ description: '產品是否軟刪除', required: false })
+  recycled?: boolean;
 
   @ApiProperty({ description: '產品創建時間' })
   createdAt: Date;

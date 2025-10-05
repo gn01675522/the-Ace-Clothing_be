@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ timestamps: true, collection: 'product' })
 export class Product {
-  @Prop({ type: String, required: true, unique: true, trim: true, index: true })
+  @Prop({ type: String, unique: true, trim: true, index: true, required: true })
   name: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Gender', required: true })
@@ -16,16 +16,16 @@ export class Product {
   })
   category: mongoose.Types.ObjectId;
 
-  @Prop({ default: [String] })
+  @Prop({ type: [String], default: [], required: false })
   features: string[];
 
-  @Prop({ trim: true, default: '' })
+  @Prop({ type: String, trim: true, default: '', required: false })
   description: string;
 
-  @Prop({ default: [String] })
+  @Prop({ type: [String], default: [], required: false })
   img_urls: string[];
 
-  @Prop({ default: false, required: true })
+  @Prop({ type: Boolean, default: false, required: false })
   recycled: boolean;
 
   createdAt: Date;

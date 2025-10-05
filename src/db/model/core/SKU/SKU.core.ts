@@ -1,39 +1,41 @@
-import mongoose, { Document, HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Product } from '../product/product.core';
-import { SizeValue } from '../../auxiliary/size_value/size_value.aux';
-
 @Schema({ timestamps: true, collection: 'sku' })
-export class SKU extends Document {
-  @Prop({ required: true, unique: true, trim: true, index: true })
+export class SKU {
+  @Prop({ type: String, unique: true, trim: true, index: true, required: true })
   sku_id: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: 'Product',
+    required: true,
   })
-  product_id: Product;
+  product_id: mongoose.Types.ObjectId;
 
-  @Prop({ default: 0 })
+  @Prop({ type: Number, default: 0, required: false })
   current_price: number;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     default: null,
     ref: 'SizeValue',
+    required: false,
   })
-  size: SizeValue;
+  size: mongoose.Types.ObjectId | null;
 
-  @Prop({ default: null, trim: true })
-  variant?: string;
+  @Prop({ type: String, default: null, trim: true, required: false })
+  variant: string | null;
 
-  @Prop({ required: true })
+  @Prop({ type: Boolean, default: false, required: false })
   is_active: boolean;
 
-  @Prop({ default: false })
+  @Prop({ type: Boolean, default: false, required: false })
   recycled: boolean;
+
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
 }
 
 export type SKUDocument = HydratedDocument<SKU>;
