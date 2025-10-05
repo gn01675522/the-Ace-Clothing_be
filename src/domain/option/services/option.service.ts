@@ -10,6 +10,8 @@ import {
   OptionCreateSizeValueReqDTO,
 } from '../DTOs/option.req.dto';
 import {
+  OptionGetGendersResDTO,
+  OptionGetProductCategoriesResDTO,
   OptionCreateCustomerLevelResDTO,
   OptionCreateGenderResDTO,
   OptionCreateProductCategoryResDTO,
@@ -17,63 +19,138 @@ import {
   OptionCreateSizeGroupResDTO,
   OptionCreateSizeValueResDTO,
 } from '../DTOs/option.res.dto';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class OptionService {
   constructor(private readonly optionRepo: OptionRepo) {}
 
-  async findProductCategories() {
-    const results = await this.optionRepo.findProductCategories();
+  async findProductCategories(): Promise<OptionGetProductCategoriesResDTO> {
+    const docs = await this.optionRepo.findProductCategories();
 
-    return results;
+    const results = docs.map((doc) => ({
+      ...doc,
+      _id: String(doc._id),
+      parent: doc.parent ? String(doc.parent) : null,
+    }));
+
+    return {
+      success: true,
+      data: results,
+      message: results
+        ? '✅ Find product categories successfully.'
+        : '⚠️ No product categories found.',
+    };
   }
 
-  async findGenders() {
-    const results = await this.optionRepo.findGenders();
+  async findGenders(): Promise<OptionGetGendersResDTO> {
+    const docs = await this.optionRepo.findGenders();
 
-    return results;
+    const results = docs.map((doc) => ({ ...doc, _id: String(doc._id) }));
+
+    return {
+      success: true,
+      data: results,
+      message: results
+        ? '✅ Find genders successfully.'
+        : '⚠️ No genders found.',
+    };
   }
 
   async createCustomLevel(
     dto: OptionCreateCustomerLevelReqDTO,
   ): Promise<OptionCreateCustomerLevelResDTO> {
-    const results = await this.optionRepo.createCustomerLevel(dto);
+    const doc = await this.optionRepo.createCustomerLevel(dto);
 
-    return results;
+    const result = { ...doc, _id: String(doc._id) };
+
+    return {
+      success: true,
+      data: result,
+      message: '✅ Customer level created successfully.',
+    };
   }
   async createGender(
     dto: OptionCreateGenderReqDTO,
   ): Promise<OptionCreateGenderResDTO> {
-    const results = await this.optionRepo.createGender(dto);
+    const doc = await this.optionRepo.createGender(dto);
 
-    return results;
+    const result = { ...doc, _id: String(doc._id) };
+
+    return {
+      success: true,
+      data: result,
+      message: '✅ Gender created successfully.',
+    };
   }
   async createProductCategory(
     dto: OptionCreateProductCategoryReqDTO,
   ): Promise<OptionCreateProductCategoryResDTO> {
-    const results = await this.optionRepo.createProductCategory(dto);
+    const criteria = {
+      ...dto,
+      parent: dto.parent ? new mongoose.Types.ObjectId(dto.parent) : null,
+    };
 
-    return results;
+    const doc = await this.optionRepo.createProductCategory(criteria);
+
+    const result = {
+      ...doc,
+      _id: String(doc._id),
+      parent: doc.parent ? String(doc.parent) : null,
+    };
+
+    return {
+      success: true,
+      data: result,
+      message: '✅ Product category created successfully.',
+    };
   }
   async createProductOrigin(
     dto: OptionCreateProductOriginReqDTO,
   ): Promise<OptionCreateProductOriginResDTO> {
-    const results = await this.optionRepo.createProductOrigin(dto);
+    const doc = await this.optionRepo.createProductOrigin(dto);
 
-    return results;
+    const result = { ...doc, _id: String(doc._id) };
+
+    return {
+      success: true,
+      data: result,
+      message: '✅ Product origin created successfully.',
+    };
   }
   async createSizeGroup(
     dto: OptionCreateSizeGroupReqDTO,
   ): Promise<OptionCreateSizeGroupResDTO> {
-    const results = await this.optionRepo.createSizeGroup(dto);
+    const doc = await this.optionRepo.createSizeGroup(dto);
 
-    return results;
+    const result = { ...doc, _id: String(doc._id) };
+
+    return {
+      success: true,
+      data: result,
+      message: '✅ Size group created successfully.',
+    };
   }
   async createSizeValue(
     dto: OptionCreateSizeValueReqDTO,
   ): Promise<OptionCreateSizeValueResDTO> {
-    const results = await this.optionRepo.createSizeValue(dto);
+    const criteria = {
+      ...dto,
+      group_id: new mongoose.Types.ObjectId(dto.group_id),
+    };
 
-    return results;
+    const doc = await this.optionRepo.createSizeValue(criteria);
+
+    const result = {
+      ...doc,
+      _id: String(doc._id),
+      group_id: String(doc.group_id),
+    };
+
+    return {
+      success: true,
+      data: result,
+      message: '✅ Size value created successfully.',
+    };
   }
 }

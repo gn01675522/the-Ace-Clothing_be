@@ -1,4 +1,4 @@
-import { ClientSession, Model } from 'mongoose';
+import mongoose, { ClientSession, Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -73,10 +73,30 @@ export class ProductRepo {
 
     return results;
   }
+  async findById(
+    id: mongoose.Types.ObjectId,
+  ): Promise<ProductReturnCriteria | null> {
+    const result = await this.productModel
+      .findOne({
+        _id: id,
+        recycled: { $ne: true },
+      })
+      .populate<{ category: { _id: mongoose.Types.ObjectId; name: string } }>(
+        'category',
+        '_id name',
+      )
+      .populate<{ gender: { _id: mongoose.Types.ObjectId; name: string } }>(
+        'gender',
+        '_id name',
+      )
+      .lean();
+
+    return result;
+  }
   async findOneAndUpdate(
     criteria: ProductUpdateArgCriteria,
     session?: ClientSession,
-  ) {
+  ): Promise<ProductBaseReturnCriteria | null> {
     const result = await this.productModel
       .findOneAndUpdate(
         { _id: criteria._id, recycled: { $ne: true } },
@@ -108,16 +128,19 @@ export class ProductRepo {
 
     return result.toObject();
   }
-  async count(criteria: any): Promise<number> {
-    const { skip, limit, ...rest } = criteria;
-
-    return this.productModel.countDocuments(rest).exec();
-  }
-  async hardDelete(id: string, session?: ClientSession): Promise<any> {
+  async hardDelete(
+    id: mongoose.Types.ObjectId,
+    session?: ClientSession,
+  ): Promise<ProductBaseReturnCriteria | null> {
     const result = await this.productModel
       .findByIdAndDelete(id, { session })
       .lean();
 
     return result;
+  }
+  async count(criteria: ProductFindQueryArgCriteria): Promise<number> {
+    const { skip, limit, ...rest } = criteria;
+
+    return this.productModel.countDocuments(rest).exec();
   }
 }

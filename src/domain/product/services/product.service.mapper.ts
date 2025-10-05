@@ -1,31 +1,50 @@
 import mongoose from 'mongoose';
 import { parsePaginationNumberUtils } from 'src/shared/utils.shared';
 
-import type { ProductDTO } from '../DTOs/product.res.dto';
+import type { ProductDTO, ProductModelDTO } from '../DTOs/product.res.dto';
 import type { ProductGetQueryDTO } from '../DTOs/product.query.dto';
 import type {
   ProductCreateReqDTO,
   ProductUpdateReqDTO,
 } from '../DTOs/product.req.dto';
 
-import type { ProductReturnCriteria } from '../criterias/product.return.criteria';
+import type {
+  ProductBaseReturnCriteria,
+  ProductReturnCriteria,
+} from '../criterias/product.return.criteria';
 import type {
   ProductFindQueryArgCriteria,
   ProductCreateArgCriteria,
   ProductUpdateArgCriteria,
 } from '../criterias/product.arg.criteria';
 
+export const mapToProductModelResDTO = (
+  doc: ProductBaseReturnCriteria,
+): ProductModelDTO => ({
+  _id: String(doc._id),
+  name: doc.name,
+  gender: String(doc.gender),
+  category: String(doc.category),
+  features: doc.features,
+  description: doc.description,
+  img_urls: doc.img_urls,
+  recycled: doc.recycled,
+  createdAt: doc.createdAt,
+  updatedAt: doc.updatedAt,
+  __v: doc.__v,
+});
+
 export const mapToProductResDTO = (doc: ProductReturnCriteria): ProductDTO => ({
+  _id: String(doc._id),
   name: doc.name,
   gender: { id: String(doc.gender._id), value: doc.gender.name },
   category: { id: String(doc.category._id), value: doc.category.name },
   features: doc.features,
   description: doc.description,
   img_urls: doc.img_urls,
+  recycled: doc.recycled,
   createdAt: doc.createdAt,
   updatedAt: doc.updatedAt,
-  recycled: doc.recycled,
-  _id: String(doc._id),
   __v: doc.__v,
 });
 

@@ -1,10 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class GenericResDTO {
-  @ApiProperty()
+  @ApiProperty({ example: true, description: 'API 是否執行成功' })
   success: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Request processed successfully',
+    description: '訊息內容',
+  })
   message: string;
 }
 

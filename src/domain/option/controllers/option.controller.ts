@@ -11,6 +11,16 @@ import {
   OptionCreateSizeGroupReqDTO,
   OptionCreateSizeValueReqDTO,
 } from '../DTOs/option.req.dto';
+import {
+  OptionCreateCustomerLevelResDTO,
+  OptionCreateGenderResDTO,
+  OptionGetGendersResDTO,
+  OptionGetProductCategoriesResDTO,
+  OptionCreateProductCategoryResDTO,
+  OptionCreateProductOriginResDTO,
+  OptionCreateSizeGroupResDTO,
+  OptionCreateSizeValueResDTO,
+} from '../DTOs/option.res.dto';
 
 @ApiTags('option')
 @Controller('option')
@@ -19,30 +29,28 @@ export class OptionController {
 
   @Get('/product-category')
   @ApiOperation({ summary: '取得全部產品類別' })
-  async getProductCategories() {
-    const data = await this.optionService.findProductCategories();
+  @ApiResponse({
+    status: 200,
+    description: '成功取得 product categories',
+    type: OptionGetProductCategoriesResDTO,
+  })
+  async getProductCategories(): Promise<OptionGetProductCategoriesResDTO> {
+    const result = await this.optionService.findProductCategories();
 
-    const results = {
-      success: true,
-      data,
-      message: '✅ success',
-    };
-
-    return results;
+    return result;
   }
 
   @Get('/gender')
   @ApiOperation({ summary: '取得全部適用性別' })
-  async getGenders() {
-    const data = await this.optionService.findGenders();
+  @ApiResponse({
+    status: 200,
+    description: '成功取得 product categories',
+    type: OptionGetGendersResDTO,
+  })
+  async getGenders(): Promise<OptionGetGendersResDTO> {
+    const result = await this.optionService.findGenders();
 
-    const results = {
-      success: true,
-      data,
-      message: '✅ success',
-    };
-
-    return results;
+    return result;
   }
 
   @Post('/customer_level')
@@ -53,8 +61,11 @@ export class OptionController {
   @ApiResponse({
     status: 200,
     description: '成功創建 customer level',
+    type: OptionCreateCustomerLevelResDTO,
   })
-  async createCustomerLevel(@Body() body: OptionCreateCustomerLevelReqDTO) {
+  async createCustomerLevel(
+    @Body() body: OptionCreateCustomerLevelReqDTO,
+  ): Promise<OptionCreateCustomerLevelResDTO> {
     const results = this.optionService.createCustomLevel(body);
 
     return results;
@@ -68,8 +79,11 @@ export class OptionController {
   @ApiResponse({
     status: 200,
     description: '成功創建 gender',
+    type: OptionCreateGenderResDTO,
   })
-  async createGender(@Body() dto: OptionCreateGenderReqDTO) {
+  async createGender(
+    @Body() dto: OptionCreateGenderReqDTO,
+  ): Promise<OptionCreateGenderResDTO> {
     const results = this.optionService.createGender(dto);
 
     return results;
@@ -83,8 +97,11 @@ export class OptionController {
   @ApiResponse({
     status: 200,
     description: '成功創建 product category',
+    type: OptionCreateProductCategoryResDTO,
   })
-  async createProductCategory(@Body() dto: OptionCreateProductCategoryReqDTO) {
+  async createProductCategory(
+    @Body() dto: OptionCreateProductCategoryReqDTO,
+  ): Promise<OptionCreateProductCategoryResDTO> {
     const results = this.optionService.createProductCategory(dto);
 
     return results;
@@ -98,8 +115,11 @@ export class OptionController {
   @ApiResponse({
     status: 200,
     description: '成功創建 product origin',
+    type: OptionCreateProductOriginResDTO,
   })
-  async createProductOrigin(@Body() dto: OptionCreateProductOriginReqDTO) {
+  async createProductOrigin(
+    @Body() dto: OptionCreateProductOriginReqDTO,
+  ): Promise<OptionCreateProductOriginResDTO> {
     const results = this.optionService.createProductOrigin(dto);
 
     return results;
@@ -113,8 +133,11 @@ export class OptionController {
   @ApiResponse({
     status: 200,
     description: '成功創建 size group',
+    type: OptionCreateSizeGroupResDTO,
   })
-  async createSizeGroup(@Body() dto: OptionCreateSizeGroupReqDTO) {
+  async createSizeGroup(
+    @Body() dto: OptionCreateSizeGroupReqDTO,
+  ): Promise<OptionCreateSizeGroupResDTO> {
     const results = this.optionService.createSizeGroup(dto);
 
     return results;
@@ -128,8 +151,11 @@ export class OptionController {
   @ApiResponse({
     status: 200,
     description: '成功創建 size value',
+    type: OptionCreateSizeValueResDTO,
   })
-  async createSizeValue(@Body() dto: OptionCreateSizeValueReqDTO) {
+  async createSizeValue(
+    @Body() dto: OptionCreateSizeValueReqDTO,
+  ): Promise<OptionCreateSizeValueResDTO> {
     const results = this.optionService.createSizeValue(dto);
 
     return results;

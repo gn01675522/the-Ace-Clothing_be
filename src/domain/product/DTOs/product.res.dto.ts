@@ -1,4 +1,4 @@
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
 
 import { GenericResDTO } from 'src/common/DTOs/generic-res.dto';
 import { PaginationDTO } from 'src/common/DTOs/pagination.dto';
@@ -55,13 +55,8 @@ export class ProductDTO extends OmitType(ProductModelDTO, [
   gender: IdValueDTO;
 }
 
-export class ProductFindByIdResDTO extends GenericResDTO {
-  @ApiProperty()
-  data: ProductDTO;
-}
-
-export class ProductsGetResDTO extends GenericResDTO {
-  @ApiProperty()
+export class ProductsGetListResDTO extends GenericResDTO {
+  @ApiProperty({ type: () => [ProductDTO] })
   data: ProductDTO[];
 
   @ApiProperty({ description: '分頁細節' })
@@ -71,7 +66,20 @@ export class ProductsGetResDTO extends GenericResDTO {
   total: number;
 }
 
+export class ProductGetResDTO extends GenericResDTO {
+  @ApiProperty({ type: () => ProductDTO })
+  data: ProductDTO;
+
+  @ApiProperty({ description: '分頁細節' })
+  pagination: PaginationDTO;
+}
+
+export class ProductFindByIdResDTO extends GenericResDTO {
+  @ApiPropertyOptional({ type: () => ProductModelDTO, nullable: true })
+  data: ProductDTO | null;
+}
+
 export class ProductUpdatedOrCreateResDTO extends GenericResDTO {
-  @ApiProperty()
-  data: ProductModelDTO;
+  @ApiPropertyOptional({ type: () => ProductModelDTO, nullable: true })
+  data: ProductModelDTO | null;
 }

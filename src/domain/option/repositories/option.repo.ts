@@ -66,26 +66,26 @@ export class OptionRepo {
     private readonly sizeValueModel: Model<SizeValueDocument>,
   ) {}
 
-  async findProductCategories() {
+  async findProductCategories(): Promise<
+    OptionProductCategoryReturnCriteria[]
+  > {
     const results = await this.productCategoryModel
       .find({ recycled: { $ne: true } })
       .lean();
 
     return results;
   }
-
-  async findGenders() {
+  async findGenders(): Promise<OptionGenderReturnCriteria[]> {
     const results = await this.genderModel
       .find({ recycled: { $ne: true } })
       .lean();
 
     return results;
   }
-
   async createCustomerLevel(
     criteria: OptionCreateCustomerLevelArgCriteria,
     session?: ClientSession,
-  ) {
+  ): Promise<OptionCustomerLevelReturnCriteria> {
     const existingData = await this.customerLevelModel.findOne({
       name: criteria.name,
     });

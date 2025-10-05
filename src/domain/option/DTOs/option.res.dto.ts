@@ -1,134 +1,175 @@
-import mongoose from 'mongoose';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class OptionCreateCustomerLevelResDTO {
-  @ApiProperty()
-  _id: mongoose.Types.ObjectId;
+import { GenericResDTO } from '../../../common/DTOs/generic-res.dto';
 
-  @ApiProperty()
+export class CustomerLevelDTO {
+  @ApiProperty({ type: String })
+  _id: string;
+
+  @ApiProperty({ type: String })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: Number })
   order: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: Boolean })
   recycled: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   updatedAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Number })
   __v: number;
 }
 
-export class OptionCreateGenderResDTO {
-  @ApiProperty()
-  _id: mongoose.Types.ObjectId;
+export class GenderDTO {
+  @ApiProperty({ type: String })
+  _id: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: String })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: Boolean })
   recycled: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   updatedAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Number })
   __v: number;
 }
 
-export class OptionCreateProductCategoryResDTO {
-  @ApiProperty()
-  _id: mongoose.Types.ObjectId;
+export class ProductCategoryDTO {
+  @ApiProperty({ type: String })
+  _id: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: String })
   name: string;
 
-  @ApiProperty()
-  parent: mongoose.Types.ObjectId | null;
+  @ApiPropertyOptional({ type: String, nullable: true })
+  parent: string | null;
 
-  @ApiProperty()
+  @ApiProperty({ type: Boolean })
   recycled: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   updatedAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Number })
   __v: number;
 }
 
-export class OptionCreateProductOriginResDTO {
-  @ApiProperty()
-  _id: mongoose.Types.ObjectId;
+export class ProductOriginDTO {
+  @ApiProperty({ type: String })
+  _id: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: String })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: Boolean })
   recycled: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   updatedAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Number })
   __v: number;
 }
 
-export class OptionCreateSizeGroupResDTO {
-  @ApiProperty()
-  _id: mongoose.Types.ObjectId;
+export class SizeGroupDTO {
+  @ApiProperty({ type: String })
+  _id: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: String })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: Boolean })
   recycled: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   updatedAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Number })
   __v: number;
 }
 
-export class OptionCreateSizeValueResDTO {
-  @ApiProperty()
-  _id: mongoose.Types.ObjectId;
+export class SizeValueDTO {
+  @ApiProperty({ type: String })
+  _id: string;
 
-  @ApiProperty()
-  group_id: mongoose.Types.ObjectId;
+  @ApiProperty({ type: String })
+  group_id: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: String })
   value: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: Number })
   order: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: Boolean })
   recycled: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Date })
   updatedAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: Number })
   __v: number;
+}
+
+export class OptionCreateCustomerLevelResDTO extends GenericResDTO {
+  @ApiProperty({ type: () => CustomerLevelDTO })
+  data: CustomerLevelDTO;
+}
+
+export class OptionCreateGenderResDTO extends GenericResDTO {
+  @ApiProperty({ type: () => GenderDTO })
+  data: GenderDTO;
+}
+
+export class OptionGetGendersResDTO extends GenericResDTO {
+  @ApiProperty({ type: () => [GenderDTO] })
+  data: GenderDTO[];
+}
+
+export class OptionGetProductCategoriesResDTO extends GenericResDTO {
+  @ApiProperty({ type: () => [ProductCategoryDTO] })
+  data: ProductCategoryDTO[];
+}
+
+export class OptionCreateProductCategoryResDTO extends GenericResDTO {
+  @ApiProperty({ type: () => ProductCategoryDTO })
+  data: ProductCategoryDTO;
+}
+
+export class OptionCreateProductOriginResDTO extends GenericResDTO {
+  @ApiProperty({ type: () => ProductOriginDTO })
+  data: ProductOriginDTO;
+}
+
+export class OptionCreateSizeGroupResDTO extends GenericResDTO {
+  @ApiProperty({ type: () => SizeGroupDTO })
+  data: SizeGroupDTO;
+}
+
+export class OptionCreateSizeValueResDTO extends GenericResDTO {
+  @ApiProperty({ type: () => SizeValueDTO })
+  data: SizeValueDTO;
 }

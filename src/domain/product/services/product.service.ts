@@ -1,15 +1,23 @@
+import mongoose from 'mongoose';
 import { Injectable } from '@nestjs/common';
 
 import { ProductRepo } from '../repositories/product.repo';
 
+import { GenericResDTO } from 'src/common/DTOs/generic-res.dto';
 import type { ProductGetQueryDTO } from '../DTOs/product.query.dto';
 import {
   ProductCreateReqDTO,
   ProductUpdateReqDTO,
 } from '../DTOs/product.req.dto';
-import { ProductDTO, ProductsGetResDTO } from '../DTOs/product.res.dto';
+import {
+  ProductDTO,
+  ProductFindByIdResDTO,
+  ProductsGetListResDTO,
+  ProductUpdatedOrCreateResDTO,
+} from '../DTOs/product.res.dto';
 
 import {
+  mapToProductModelResDTO,
   mapToProductResDTO,
   mapToProductFindArgCriteria,
   mapToProductCreateCriteria,
@@ -21,7 +29,7 @@ import { parsePaginationNumberUtils } from 'src/shared/utils.shared';
 export class ProductService {
   constructor(private readonly productRepo: ProductRepo) {}
 
-  async findProducts(dto: ProductGetQueryDTO): Promise<any> {
+  async findProducts(dto: ProductGetQueryDTO): Promise<ProductsGetListResDTO> {
     const current_page = parsePaginationNumberUtils(dto?.current_page, 1, 1);
     const per_page = parsePaginationNumberUtils(dto?.per_page, 10, 1);
 
@@ -34,7 +42,8 @@ export class ProductService {
 
     const mapProducts = products.map((product) => mapToProductResDTO(product));
 
-    const results = {
+    return {
+      success: true,
       data: mapProducts,
       pagination: {
         current_page,
@@ -42,30 +51,70 @@ export class ProductService {
         total_pages: Math.ceil(total / per_page),
       },
       total,
+      message:
+        mapProducts.length > 0
+          ? '✅ Find product successfully.'
+          : '⚠️ No products found.',
     };
-
-    return results;
   }
+  async findProductById(id: string): Promise<ProductFindByIdResDTO> {
+    const objectId = new mongoose.Types.ObjectId(id);
 
-  async updateProduct(id: string, dto: ProductUpdateReqDTO) {
+    const docs = await this.productRepo.findById(objectId);
+
+    const result = docs ? mapToProductResDTO(docs) : null;
+
+    return {
+      success: true,
+      data: result,
+      message: result
+        ? '✅ Find product successfully.'
+        : '⚠️ No products found.',
+    };
+  }
+  async updateProduct(
+    id: string,
+    dto: ProductUpdateReqDTO,
+  ): Promise<ProductUpdatedOrCreateResDTO> {
     const criteria = mapToProductUpdateCriteria(id, dto);
 
-    const result = await this.productRepo.findOneAndUpdate(criteria);
+    const doc = await this.productRepo.findOneAndUpdate(criteria);
 
-    return result;
+    const result = doc ? mapToProductModelResDTO(doc) : null;
+
+    return {
+      success: result ? true : false,
+      data: result,
+      message: result
+        ? '✅ Product updated successfully.'
+        : '❌ Product updated failed.',
+    };
   }
-
-  async create(dto: ProductCreateReqDTO): Promise<any> {
+  async create(
+    dto: ProductCreateReqDTO,
+  ): Promise<ProductUpdatedOrCreateResDTO> {
     const criteria = mapToProductCreateCriteria(dto);
 
-    const result = await this.productRepo.create(criteria);
+    const doc = await this.productRepo.create(criteria);
 
-    return result;
+    const result = mapToProductModelResDTO(doc);
+
+    return {
+      success: true,
+      data: result,
+      message: '✅ Product created successfully.',
+    };
   }
+  async hardDelete(id: string): Promise<GenericResDTO> {
+    const objectId = new mongoose.Types.ObjectId(id);
 
-  async hardDelete(id: string) {
-    const result = await this.productRepo.hardDelete(id);
+    const result = await this.productRepo.hardDelete(objectId);
 
-    return result;
+    return {
+      success: result ? true : false,
+      message: result
+        ? '✅ Product deleted successfully.'
+        : '❌ Product deleted failed.',
+    };
   }
 }
