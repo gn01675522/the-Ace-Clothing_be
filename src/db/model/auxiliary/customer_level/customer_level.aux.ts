@@ -13,7 +13,7 @@ export class CustomerLevel {
     enum: Object.values(CUSTOMER_LEVEL_CLASSES),
     required: true,
   })
-  name: string;
+  name: CUSTOMER_LEVEL_CLASSES;
 
   @Prop({
     type: Number,

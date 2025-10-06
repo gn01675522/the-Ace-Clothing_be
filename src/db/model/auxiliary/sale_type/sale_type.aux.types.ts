@@ -1,0 +1,4 @@
+export enum SALE_TYPE_CLASSES {
+  PERCENTAGE = "PERCENTAGE",
+  FIXED = "FIXED",
+}

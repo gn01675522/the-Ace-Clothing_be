@@ -11,7 +11,7 @@ export class ProductOrigin {
     unique: true,
     required: true,
   })
-  name: string;
+  name: PRODUCT_ORIGIN_CLASSES;
 
   @Prop({ type: Boolean, default: false, required: false })
   recycled: boolean;

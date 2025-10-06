@@ -50,20 +50,28 @@ export const mapToProductResDTO = (doc: ProductReturnCriteria): ProductDTO => ({
 
 export const mapToProductFindArgCriteria = (
   dto: ProductGetQueryDTO,
-): ProductFindQueryArgCriteria => {
+): {
+  criteria: ProductFindQueryArgCriteria;
+  pagination: { current_page: number; per_page: number };
+} => {
   const current_page = parsePaginationNumberUtils(dto?.current_page, 1, 1);
   const per_page = parsePaginationNumberUtils(dto?.per_page, 10, 1);
   const recycled = dto.recycled !== undefined ? dto.recycled === 'true' : false;
 
   return {
-    ...(dto.name ? { name: dto.name } : {}),
-    ...(dto.gender ? { gender: new mongoose.Types.ObjectId(dto.gender) } : {}),
-    ...(dto.category
-      ? { category: new mongoose.Types.ObjectId(dto.category) }
-      : {}),
-    skip: ((current_page ?? 1) - 1) * (per_page ?? 10),
-    limit: per_page ?? 10,
-    recycled,
+    criteria: {
+      ...(dto.name ? { name: dto.name } : {}),
+      ...(dto.gender
+        ? { gender: new mongoose.Types.ObjectId(dto.gender) }
+        : {}),
+      ...(dto.category
+        ? { category: new mongoose.Types.ObjectId(dto.category) }
+        : {}),
+      skip: ((current_page ?? 1) - 1) * (per_page ?? 10),
+      limit: per_page ?? 10,
+      recycled,
+    },
+    pagination: { current_page, per_page },
   };
 };
 

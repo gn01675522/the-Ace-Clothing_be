@@ -1,8 +1,6 @@
 import mongoose, { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { COUPON_TYPE_CLASSES, COUPON_SCOPE_CLASSES } from './coupon.core.types';
-
 @Schema({ timestamps: true, collection: 'coupon' })
 export class Coupon {
   @Prop({ type: String, unique: true, trim: true, index: true, required: true })
@@ -12,13 +10,12 @@ export class Coupon {
   code: string;
 
   @Prop({
-    type: String,
-    trim: true,
-    enum: Object.values(COUPON_TYPE_CLASSES),
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SaleType',
     describe: '用來判斷優惠碼是以趴數來折扣，還是固定金額',
     required: true,
   })
-  type: string;
+  type: mongoose.Types.ObjectId;
 
   @Prop({
     type: Number,
@@ -28,12 +25,12 @@ export class Coupon {
   value: number;
 
   @Prop({
-    type: String,
-    enum: Object.values(COUPON_SCOPE_CLASSES),
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SaleScope',
     describe: '用來標注是全站優惠、類別優惠還是單一產品、SKU 優惠',
     required: true,
   })
-  scope: string;
+  scope: mongoose.Types.ObjectId;
 
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
@@ -56,13 +53,13 @@ export class Coupon {
   @Prop({
     type: Number,
     default: 0,
-    describe: '主要用來做限量優惠用 (全站)',
+    describe: '主要用來做限量優惠用',
     required: false,
   })
   max_usage: number;
 
   @Prop({ type: Number, default: 0, required: false })
-  per_user_limit: number;
+  per_customer_limit: number;
 
   @Prop({ type: Boolean, default: false, required: false })
   is_enable: boolean;

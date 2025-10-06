@@ -10,6 +10,9 @@ import { Gender } from '../model/auxiliary/gender/gender.aux';
 import { SizeGroup } from '../model/auxiliary/size_group/size_group.aux';
 import { SizeValue } from '../model/auxiliary/size_value/size_value.aux';
 import { SKU } from '../model/core/SKU/SKU.core';
+import { SaleScope } from '../model/auxiliary/sale_scope/sale_scope.aux';
+import { SaleType } from '../model/auxiliary/sale_type/sale_type.aux';
+import { Coupon } from '../model/core/coupon/coupon.core';
 
 import { productSeed } from './data/product.seed';
 import { customerLevelSeed } from './data/customer_level.seed';
@@ -21,6 +24,9 @@ import {
 import { productOriginSeed } from './data/product_origin.seed';
 import { sizeGroupSeed, sizeValueSeed } from './data/size.seed';
 import { SKUSeed } from './data/SKU.seed';
+import { saleScopeSeed } from './data/sale_scope.seed';
+import { saleTypeSeed } from './data/sale_type.seed';
+import { couponSeed } from './data/coupon.seed';
 
 @Injectable()
 export class SeedService {
@@ -41,6 +47,12 @@ export class SeedService {
     private readonly productModel: Model<Product>,
     @InjectModel(SKU.name)
     private readonly SKUModel: Model<SKU>,
+    @InjectModel(SaleScope.name)
+    private readonly saleScopeModel: Model<SaleScope>,
+    @InjectModel(SaleType.name)
+    private readonly saleTypeModel: Model<SaleType>,
+    @InjectModel(Coupon.name)
+    private readonly couponModel: Model<Coupon>,
   ) {}
 
   async genCustomerLevel() {
@@ -271,6 +283,94 @@ export class SeedService {
       }
     }
   }
+  async genSaleScope() {
+    console.log('🌱 Running Sale Scope Seed...');
+
+    try {
+      await this.saleScopeModel.insertMany(saleScopeSeed, {
+        ordered: false,
+      });
+
+      console.log('✅ Sale Scope Seeding finished');
+    } catch (e: any) {
+      if (e?.writeErrors) {
+        console.warn(
+          '⚠️ Sale Scope duplicate records skipped:',
+          e.writeErrors.length,
+        );
+      } else {
+        throw e;
+      }
+    }
+  }
+  async genSaleType() {
+    console.log('🌱 Running Sale Type Seed...');
+
+    try {
+      await this.saleTypeModel.insertMany(saleTypeSeed, {
+        ordered: false,
+      });
+
+      console.log('✅ Sale Type Seeding finished');
+    } catch (e: any) {
+      if (e?.writeErrors) {
+        console.warn(
+          '⚠️ Sale Type duplicate records skipped:',
+          e.writeErrors.length,
+        );
+      } else {
+        throw e;
+      }
+    }
+  }
+  async genCoupon() {
+    console.log('🌱 Running Coupon Seed...');
+
+    try {
+      const findSaleScope = await this.saleScopeModel.find();
+      const findSaleType = await this.saleTypeModel.find();
+
+      const newCoupon = couponSeed.map((coupon) => {
+        const targetSaleScope = findSaleScope.find(
+          (scope) => scope.name === coupon.scope,
+        );
+        const targetSaleType = findSaleType.find(
+          (type) => type.name === coupon.type,
+        );
+
+        if (!targetSaleScope || !targetSaleType) {
+          const missingTarget = !targetSaleScope ? 'scope' : 'type';
+          const missingTargetInfo = !targetSaleScope
+            ? coupon.scope
+            : coupon.type;
+
+          throw new Error(
+            `Cannot find target ${missingTarget}: ${missingTargetInfo}, please try again!`,
+          );
+        }
+
+        return {
+          ...coupon,
+          scope: targetSaleScope._id,
+          type: targetSaleType._id,
+        };
+      });
+      const results = await this.couponModel.insertMany(newCoupon, {
+        ordered: false,
+      });
+
+      console.log('✅ Coupon Seeding finished');
+    } catch (e: any) {
+      if (e?.writeErrors) {
+        console.warn(
+          '⚠️ Coupon duplicate records skipped:',
+          e.writeErrors.length,
+        );
+      } else {
+        throw e;
+      }
+    }
+  }
 
   async seed() {
     console.log('🚀 Start seeding');
@@ -282,10 +382,13 @@ export class SeedService {
         this.genGender(),
         this.genProductCategory(),
         this.genSize(),
+        this.genSaleScope(),
+        this.genSaleType(),
       ]);
 
       await this.genProduct();
       await this.genSKU();
+      await this.genCoupon();
 
       console.log('✅ Seeding finished');
     } catch (e: any) {

@@ -1,0 +1,6 @@
+export enum SALE_SCOPE_CLASSES {
+  GLOBAL = 'GLOBAL',
+  CATEGORY = 'CATEGORY',
+  PRODUCT = 'PRODUCT',
+  SKU = 'SKU',
+}

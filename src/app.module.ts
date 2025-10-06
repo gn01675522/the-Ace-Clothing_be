@@ -5,6 +5,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { DatabaseModule } from './config/db/db.module';
 import { ProductModule } from './domain/product/product.module';
 import { OptionModule } from './domain/option/option.module';
+import { CouponModule } from './domain/coupon/coupon.module';
 
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
@@ -16,6 +17,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
     DatabaseModule,
     ProductModule,
     OptionModule,
+    CouponModule,
   ],
   providers: [
     {

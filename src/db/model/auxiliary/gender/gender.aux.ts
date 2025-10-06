@@ -13,7 +13,7 @@ export class Gender {
     enum: Object.values(GENDER_CLASSES),
     required: true,
   })
-  name: string;
+  name: GENDER_CLASSES;
 
   @Prop({ type: Boolean, default: false, required: false })
   recycled: boolean;

@@ -28,6 +28,15 @@ import {
   SizeValueSchema,
 } from '../model/auxiliary/size_value/size_value.aux';
 import { SKU, SKUSchema } from '../model/core/SKU/SKU.core';
+import {
+  SaleScope,
+  SaleScopeSchema,
+} from '../model/auxiliary/sale_scope/sale_scope.aux';
+import {
+  SaleType,
+  SaleTypeSchema,
+} from '../model/auxiliary/sale_type/sale_type.aux';
+import { Coupon, CouponSchema } from '../model/core/coupon/coupon.core';
 
 @Module({
   imports: [
@@ -44,6 +53,9 @@ import { SKU, SKUSchema } from '../model/core/SKU/SKU.core';
       { name: SizeGroup.name, schema: SizeGroupSchema },
       { name: SizeValue.name, schema: SizeValueSchema },
       { name: SKU.name, schema: SKUSchema },
+      { name: SaleScope.name, schema: SaleScopeSchema },
+      { name: SaleType.name, schema: SaleTypeSchema },
+      { name: Coupon.name, schema: CouponSchema },
     ]),
   ],
   providers: [SeedService],

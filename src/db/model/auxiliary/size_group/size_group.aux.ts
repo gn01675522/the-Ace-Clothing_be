@@ -10,7 +10,7 @@ export class SizeGroup {
     enum: Object.values(SIZE_GROUP_CLASSES),
     required: true,
   })
-  name: string;
+  name: SIZE_GROUP_CLASSES;
 
   @Prop({ type: Boolean, default: false, required: false })
   recycled: boolean;

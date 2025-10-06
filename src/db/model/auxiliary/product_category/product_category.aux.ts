@@ -12,7 +12,7 @@ export class ProductCategory {
     enum: Object.values(PRODUCT_CATEGORY_CLASSES),
     required: true,
   })
-  name: string;
+  name: PRODUCT_CATEGORY_CLASSES;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

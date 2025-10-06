@@ -10,7 +10,6 @@ import {
   ProductUpdateReqDTO,
 } from '../DTOs/product.req.dto';
 import {
-  ProductDTO,
   ProductFindByIdResDTO,
   ProductsGetListResDTO,
   ProductUpdatedOrCreateResDTO,
@@ -23,17 +22,13 @@ import {
   mapToProductCreateCriteria,
   mapToProductUpdateCriteria,
 } from './product.service.mapper';
-import { parsePaginationNumberUtils } from 'src/shared/utils.shared';
 
 @Injectable()
 export class ProductService {
   constructor(private readonly productRepo: ProductRepo) {}
 
   async findProducts(dto: ProductGetQueryDTO): Promise<ProductsGetListResDTO> {
-    const current_page = parsePaginationNumberUtils(dto?.current_page, 1, 1);
-    const per_page = parsePaginationNumberUtils(dto?.per_page, 10, 1);
-
-    const criteria = mapToProductFindArgCriteria(dto);
+    const { criteria, pagination } = mapToProductFindArgCriteria(dto);
 
     const [products, total] = await Promise.all([
       this.productRepo.find(criteria),
@@ -46,9 +41,9 @@ export class ProductService {
       success: true,
       data: mapProducts,
       pagination: {
-        current_page,
-        per_page,
-        total_pages: Math.ceil(total / per_page),
+        current_page: pagination.current_page,
+        per_page: pagination.per_page,
+        total_pages: Math.ceil(total / pagination.per_page),
       },
       total,
       message:
